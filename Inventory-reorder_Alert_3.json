@@ -1,0 +1,146 @@
+{
+  "name": "Inventory-reorder_Alert_3",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 7
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "43a438bd-cd04-4184-a35c-683c310eac18",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1LkbXmxLLAOFr-7o7Epa0gU4JsokOpXjoLBRzReah2js",
+          "mode": "list",
+          "cachedResultName": "AI-Practice n8n",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1LkbXmxLLAOFr-7o7Epa0gU4JsokOpXjoLBRzReah2js/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1330389994,
+          "mode": "list",
+          "cachedResultName": "Inventory-reorder_n8n",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1LkbXmxLLAOFr-7o7Epa0gU4JsokOpXjoLBRzReah2js/edit#gid=1330389994"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        0
+      ],
+      "id": "85d352d5-d055-4d91-9110-4de39ab1fd88",
+      "name": "Read_inventory_stock",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "hj9GVlHKrfnjSgFo",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const rows = $input.all();\nconst lowStock = [];\n\nfor (const row of rows) {\n  const qty = Number(row.json.Quantity);\n  const threshold = Number(row.json.Threshold);\n\n  if (qty < threshold) {\n    lowStock.push(`${row.json.Item} (Qty: ${qty})`);\n  }\n}\n\n// Return one combined string\nreturn [{\n  json: {\n    summary: lowStock.length\n      ? `The following items need restocking:\n      \\n\\n${lowStock.join(\"\\n\")}`\n      : \"All stock levels are sufficient today.\"\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        0
+      ],
+      "id": "8aa9dc00-8c39-4415-8877-4c644874bed0",
+      "name": "Code for checking inventory",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "sendTo": "connor.carey1@proton.me",
+        "subject": "Low Stock Alert",
+        "message": "={{ $json.summary }}\n",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        672,
+        0
+      ],
+      "id": "74cc962e-f473-4cd1-b238-5b6b04b21941",
+      "name": "Email code output",
+      "webhookId": "d6b60fe9-1f41-436a-83c0-b2d81292d814",
+      "alwaysOutputData": true,
+      "executeOnce": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "u6UZWTQN6dsA2cUz",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Read_inventory_stock",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read_inventory_stock": {
+      "main": [
+        [
+          {
+            "node": "Code for checking inventory",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code for checking inventory": {
+      "main": [
+        [
+          {
+            "node": "Email code output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ecd1fa4e-5357-4e03-9842-7fa48e1bf6b0",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "91c7bbe549e6b1ce176a6cba870e18b1a9397b8b96abba762c4236f7d060db36"
+  },
+  "id": "9qnrr8LpwrrJDVze",
+  "tags": []
+}
