@@ -1,4 +1,4 @@
-# ⚙️ n8n Automation Portfolio
+# AI Automation Portfolio
 
 A curated collection of **production-ready n8n workflows** showcasing practical automations I’ve built for real business use cases — from AI-powered lead responses to review management, alerts, and task reminders.  
 Each workflow demonstrates **AI + automation integration** using tools like **OpenAI (GPT-5), Supabase, Google Sheets, Gmail, Slack, and Twilio**.
@@ -7,7 +7,7 @@ Each workflow demonstrates **AI + automation integration** using tools like **Op
 
 ## Workflows Included
 
-### 1. 📨 Lead_Responder_26  
+### 1. Lead_Responder_26  
 Automatically replies to new website leads using GPT-5 to draft a friendly, professional response. Logs all lead data to Google Sheets.  
 **Stack:** n8n · OpenAI · Gmail · Google Sheets  
 **Use Case:** AI auto-responder for small business contact forms.
